@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style> /* set the CSS */
+
+body { font: 12px Arial;}
+
+path { 
+    stroke: steelblue;
+    stroke-width: 2;
+    fill: none;
+}
+
+path:hover{
+	opacity: 0.5}
+	
+.axis path,
+.axis line {
+    fill: none;
+    stroke: grey;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+}
+  .legend {
+    font-size: 12px;
+  }
+  rect {
+    stroke-width: 2;
+  }
+
+  
+</style>
+<body>
+
+<!-- load the d3.js library -->    
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+	function changeWidth(inWidthId, decWidthId1, decWidthId2, decWidthId3 ){
+		var inPath = document.getElementById(inWidthId);
+		inPath.style['stroke-width']=5;
+		var decPath1 = document.getElementById(decWidthId1);
+		decPath1.style['stroke-width']=1;
+		var decPath2 = document.getElementById(decWidthId2);
+		decPath2.style['stroke-width']=1;
+		var decPath3 = document.getElementById(decWidthId3);
+		decPath3.style['stroke-width']=1;
+	}
+</script>
+
+<div id="title" style="font-weight:bold">
+	Accoustic Chords per measure, Michigan -- Milk Carton Kids (as performed by me)
+</div>
+
+<script>
+
+// Set the dimensions of the canvas / graph
+var margin = {top: 30, right: 20, bottom: 30, left: 50},
+    width = 800 - margin.left - margin.right,
+    height = 270 - margin.top - margin.bottom;
+	padding = -80; // space around the chart, not including labels
+
+	
+// Parse the date / time
+var parseDate = d3.time.format("%d-%b-%y").parse;
+
+// Set the ranges
+var x = d3.scale.linear().range([0, width]);
+var y = d3.scale.linear().range([height, 0]);
+
+// Define the axes
+var xAxis = d3.svg.axis().scale(x)
+    .orient("bottom").ticks(40);
+
+var yAxis = d3.svg.axis().scale(y)
+    .orient("left").ticks(5);
+
+// Define the line
+var valueline = d3.svg.line()
+    .x(function(d) { return x(d.Bar); })
+    .y(function(d) { return y(d.C); });
+
+// Define the line
+var valueline2 = d3.svg.line()
+    .x(function(d) { return x(d.Bar); })
+    .y(function(d) { return y(d.G); });
+
+// Define the line
+var valueline3 = d3.svg.line()
+    .x(function(d) { return x(d.Bar); })
+    .y(function(d) { return y(d.em); });
+
+// Define the line
+var valueline4 = d3.svg.line()
+    .x(function(d) { return x(d.Bar); })
+    .y(function(d) { return y(d.D); });
+
+d3.select("body")
+    .style("color", "#CCCCCC") // transition to gray
+  .transition()
+    .style("color", "black") // transition to black
+	.duration(3000);
+    
+// Adds the svg canvas
+var svg = d3.select("body")
+    .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+        .attr("transform", 
+              "translate(" + margin.left + "," + margin.top + ")");
+
+// Get the data
+d3.csv("chord_data_michigan.csv", function(error, data) {
+    data.forEach(function(d) {
+        d.Bar = +d.Bar;
+        //d.em = +d.em;
+        //d.G = +d.G;
+        d.C = +d.C;
+        //d.D = +d.D;
+    });
+
+    // Scale the range of the data
+    x.domain(d3.extent(data, function(d) { return d.Bar; }));
+    y.domain([0, d3.max(data, function(d) { return 14; })]);
+
+    // Add the valueline path.
+    svg.append("path")
+		.attr("class", "line")
+		.attr("id", "cChord")
+        .attr("d", valueline(data))
+		.style("stroke", "#CCCCCC")
+        .transition()
+		.style("stroke", "blue")
+		.duration(1500);
+
+
+	svg.append("path")		// Add the valueline2 path.
+		.attr("class", "line")
+		.style("stroke", "#CCCCCC")
+		.attr("id", "gChord")
+		.attr("d", valueline2(data))
+        .transition()
+		.style("stroke", "red")
+		.duration(1500);
+
+		svg.append("path")		// Add the valueline3 path.
+		.attr("id", "dChord")
+		.attr("class", "line")
+		.style("stroke", "#CCCCCC")
+		.attr("d", valueline3(data))
+        .transition()
+		.style("stroke", "green")
+		.duration(1500);
+
+
+		svg.append("path")		// Add the valueline4 path.
+		.attr("class", "line")
+		.style("stroke", "#CCCCCC")
+		.attr("id", "emChord")
+		.attr("d", valueline4(data))
+        .transition()
+		.style("stroke", "gray")
+		.duration(1500);		
+			
+		
+    // Add the X Axis
+    svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
+		
+    // Add the Y Axis
+    svg.append("g")
+        .attr("class", "y axis")
+        .call(yAxis);	
+
+	// now add titles to the axes
+	svg.append("text")
+		.attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
+		.attr("transform", "translate("+ (padding/2) +","+(height/2)+")rotate(-90)")  // text is drawn off the screen top left, move down and out and rotate
+		.text("Chords");
+
+	svg.append("text")
+		.attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
+		.attr("transform", "translate("+ (width/2) +","+(height+5-(padding/3))+")")  // centre below axis
+		.text("Measure");		
+
+});
+
+</script>
+<div style="border: 1px solid black">
+<b>Legend:</b><p>
+ <input style="color:white; background-color: gray" type="button" width="10" height="10" value="Highlight" onClick="changeWidth('emChord', 'gChord', 'cChord', 'dChord')"> <span style="color: gray">-- Em </span><br>
+<input style="color:white; background-color: red" type="button" width="10" height="10" value="Highlight" onClick="changeWidth('gChord', 'emChord', 'cChord', 'dChord')"> <span style="color: red">-- G </span>  <br>
+<input style="color:white; background-color: blue" type="button" width="10" height="10" value="Highlight" onClick="changeWidth('cChord', 'gChord', 'emChord', 'dChord')">  <span style="color: blue">--C</span><br>
+<input style="color:white; background-color: green" type="button" width="10" height="10" value="Highlight" onClick="changeWidth('dChord', 'gChord', 'cChord', 'emChord')"><span style="color: green">--D</span> <br>
+</div>
+
+</body>
