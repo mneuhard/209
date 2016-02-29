@@ -95,8 +95,10 @@ var valueline4 = d3.svg.line()
 
 d3.select("body")
     .style("color", "#CCCCCC") // transition to gray
-  .transition()
+    .style("background", "#C9C9C0") // transition to gray
+    .transition()
     .style("color", "black") // transition to black
+	.style("background", "#FFFFFF")
 	.duration(3000);
     
 // Adds the svg canvas
@@ -131,6 +133,7 @@ d3.csv("chord_data_michigan.csv", function(error, data) {
         .transition()
 		.style("stroke", "blue")
 		.duration(1500);
+
 
 
 	svg.append("path")		// Add the valueline2 path.
