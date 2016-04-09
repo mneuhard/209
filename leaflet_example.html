@@ -14,7 +14,7 @@
 	<script src="assets/leaflet/leaflet.js">
 	</script>
 	<script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-omnivore/v0.2.0/leaflet-omnivore.min.js'></script>
-	<script src="us-states.js">
+	<script src="counties_population.js">
 	</script>
 	<script>
 	var theMap=L.map('mymap').setView([37.8, -96], 4);
@@ -30,8 +30,8 @@
 	//L.geoJson(point).addTo(theMap);
 	function style(feature) {
 		return {
-			fillColor: getColor(feature.properties.density),
-			weight: 2,
+			fillColor: getColor(feature.properties.PEP_2015_PEPANNRES_with_ann_respop72015),
+			weight: .5,
 			opacity: 1,
 			color: 'white',
 			dashArray: '3',
@@ -40,19 +40,21 @@
 	}	
 	
 	function getColor(d) {
-		return d > 200 ? '#800026' :
-			   d > 175 ? '#BD0026' :
-			   d > 150 ? '#E31A1C' :
-			   d > 125 ? '#FC4E2A' :
-			   d > 100 ? '#FD8D3C' :
-			   d > 75 ? '#FEB24C' :
-               d > 50 ? '#FED976' :
-                      '#FFEDA0';
+		return 	d > 1500000 ? '#023858' :
+				d > 1250000 ? '#045a8d' :
+				d > 1000000 ? '#0570b0' :
+				d > 750000 ? '#3690c0' :
+				d > 500000 ? '#74a9cf' :
+				d > 250000 ? '#a6bddb' :
+				d > 100000 ? '#d0d1e6' :
+				d > 50000 ? '#ece7f2' :
+				'#fff7fb' ;		
+					  
 	}
 	
 	omnivore.csv('baseball_stadiums.csv').addTo(theMap);
 	
-	L.geoJson(statesData, {style: style}).addTo(theMap)
+	L.geoJson(countyData, {style: style}).addTo(theMap)
 	</script>
 </body>
 </html>
