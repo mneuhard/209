@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Leaflet Example</title>
+	<link rel="stylesheet" href="/assets/leaflet/leaflet.css">
+</head>
+
+<body>
+	<div id="mymap" style="height:500px;">
+	</div>
+
+	<script src="/assets/leaflet/leaflet.js">
+	</script>
+	<script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-omnivore/v0.2.0/leaflet-omnivore.min.js'></script>
+	<script src="/us-states.js">
+	</script>
+	<script>
+	var theMap=L.map('mymap').setView([37.8, -96], 4);
+	L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+	attribution: 'Map data &copy <a href="http://openstreetmap.org>OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">, Imagery <a href="http://mapbox.com">Mapbox</a>',
+	id: 'mapbox.light',
+	maxZoom: 18,
+	accessToken: 'pk.eyJ1IjoibW5ldWhhcmQiLCJhIjoiY2ltczBpNGlyMDFkZHdrbHVlOWtoMXduNiJ9.rWeQjjn_Fbq4K3tSYF7fvA',
+	
+	}).addTo(theMap);
+	
+
+	//L.geoJson(point).addTo(theMap);
+	function style(feature) {
+		return {
+			fillColor: getColor(feature.properties.density),
+			weight: 2,
+			opacity: 1,
+			color: 'white',
+			dashArray: '3',
+			fillOpacity: 0.7
+		};
+	}	
+	
+	function getColor(d) {
+		return d > 200 ? '#800026' :
+			   d > 175 ? '#BD0026' :
+			   d > 150 ? '#E31A1C' :
+			   d > 125 ? '#FC4E2A' :
+			   d > 100 ? '#FD8D3C' :
+			   d > 75 ? '#FEB24C' :
+               d > 50 ? '#FED976' :
+                      '#FFEDA0';
+	}
+	
+	omnivore.csv('baseball_stadiums.csv').addTo(theMap);
+	
+	L.geoJson(statesData, {style: style}).addTo(theMap)
+	</script>
+</body>
+</html>
+
